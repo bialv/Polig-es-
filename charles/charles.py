@@ -9,15 +9,16 @@ import random
 
 
 class Individual:
-
+#first we initialize 
     def __init__(self, l, w):
         self.l = l
         self.w = w
         self.fitness = float('inf')
         self.array = None
         self.image = None
-
+        # our representation is done with create random image function
         self.representation = self.create_random_image_array()
+        # fitness will be assigned to each individual
         self.fitness = float('inf')
 
 
@@ -40,10 +41,10 @@ class Individual:
             num_points = random.randint(3, 6)  # Random number of points per polygon
             region_x = random.randint(0, self.l)
             region_y = random.randint(0, self.w)
-
+            # we do a list comprehension to generate polygon vertices
             xy = [(random.randint(region_x - region, region_x + region),
                 random.randint(region_y - region, region_y + region)) for _ in range(num_points)]
-
+            # with polygons done we draw them in the image we created above
             ImageDraw.Draw(img).polygon(xy, fill=self.rand_color())
 
         self.image = img
@@ -68,6 +69,7 @@ class Individual:
 
 
 class Population:
+    #first we initialize
     def __init__(self, size, optim, target_image,**kwargs):
 
         self.target_image = target_image
@@ -81,7 +83,7 @@ class Population:
         self.optim = optim
 
         self.individuals = []
-
+        # to populate we append Indivituals until we reach the size defined
         for i in range(size):
             new_indiv = Individual(self.l, self.w)
 
@@ -169,13 +171,14 @@ class Population:
                 
                 if i % 100 == 0 or i == gens - 1:
 
-                    # change this path where you want to save your images
+                    # this always needs to change to the path where we want to save your images
                     fittest.image.save(r"C:\Users\afspf\Documents\FAC\2nd semester\CIFO\Project" + str(i)+".png")
 
                     print("Most fit individual in epoch " + str(i) +
                         " has fitness: " + str(best_fitness))
 
         df = pd.DataFrame(all_fitness_values)
+        # this saves the fitness values in csv to futher analysis
         filename = f"xo_prob_{xo_prob}_mut_prob_{mut_prob}_fitness_values.csv"
         df.to_csv(filename, index=False)
 
