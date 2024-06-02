@@ -105,25 +105,26 @@ class Population:
             for individual in self.individuals:
                 individual.get_fitness(self.target_image)
             fitness_values = []
-
+            
+            # also loop through generations
             for i in range(gens):
                 new_pop = []
-
+                # we want to keep the best individual to carry over to the next generation, replacement elitism
                 if elitism:
                     if self.optim == "max":
                         elite = copy(max(self.individuals, key=attrgetter('fitness')))
                     elif self.optim == "min":
                         elite = copy(min(self.individuals, key=attrgetter('fitness')))
 
-
+                # perform xo and mut while we don't have the desirable number on the generation we currently are on
                 while len(new_pop) < self.size:
-
+                    # select the parents using the selection method we pass when calling this function
                     parent1, parent2 = select(self), select(self)
-                    
+                    # randomly decide whether or not to perform crossover and xo
                     rand = random.uniform(0, 1)
-
+                    # check probabilite against the random value
                     if rand < xo_prob:
-                        
+                        # do the crossover
                         offspring1 = xo(self, parent1, parent2)
                         if (inner_elitism):
                             while offspring1 == None:
@@ -136,12 +137,16 @@ class Population:
                             offspring1 = xo(self, parent1, parent2, inner_elitism = inner_elitism)
                         
                     else:
+                        # we choose the parent with best fitness as offspring if no crossover is performed
                         offspring1 = parent1 if parent1.fitness <= parent2.fitness else parent2
 
+                    # check probabilite against the random value
                     if rand < mut_prob:
+                        # do the mutation
                         offspring1 = mutate(self, offspring1)
                     new_pop.append(offspring1)
-                
+
+                # in the end we replace the worst individual with the elite individual, replacement elitism
                 if elitism:
                     if self.optim == "max":
                         worst = min(new_pop, key=attrgetter('fitness'))
@@ -154,13 +159,16 @@ class Population:
                             new_pop.pop(new_pop.index(worst))
                             new_pop.append(elite)
 
-
+                # upadate the population with the one we just created
                 self.individuals = new_pop
+                # sort the fitness values
                 self.individuals.sort(key=lambda ind: ind.fitness)
-                fittest = self.individuals[0]
-
-                best_fitness = fittest.fitness
                 
+                # the first of the list is our best individual
+                fittest = self.individuals[0]
+                best_fitness = fittest.fitness
+
+                # we store fitness values for analysis
                 all_fitness_values['run'].append(run)
                 all_fitness_values['generation'].append(i)
                 all_fitness_values['fitness'].append(best_fitness)
@@ -168,19 +176,20 @@ class Population:
                 all_fitness_values['xo_method'].append(xo.__name__)
                 all_fitness_values['selection_method'].append(select.__name__)
 
+                # we print the current generation's best fitness and population size to keep track of what's happening when we run the code
                 print(f"Best individual of gen #{i + 1}: {best_fitness}")
                 print(f"Population of run {run} has: {len(new_pop)}")
-                
-                if i % 100 == 0 or i == gens - 1:
 
+                # we save the image of the fittest individual every 100th generations
+                if i % 100 == 0 or i == gens - 1:
                     # this always needs to change to the path where we want to save your images
                     fittest.image.save(r"C:\Users\afspf\Documents\FAC\2nd semester\CIFO\Project" + str(i)+".png")
 
                     print("Most fit individual in epoch " + str(i) +
                         " has fitness: " + str(best_fitness))
 
-        df = pd.DataFrame(all_fitness_values)
         # this saves the fitness values in csv to futher analysis
+        df = pd.DataFrame(all_fitness_values)
         filename = f"xo_prob_{xo_prob}_mut_prob_{mut_prob}_fitness_values.csv"
         df.to_csv(filename, index=False)
 
