@@ -137,7 +137,7 @@ class Population:
                             offspring1 = xo(self, parent1, parent2, inner_elitism = inner_elitism)
                         
                     else:
-                        # we choose the parent with best fitness as offspring if no crossover is performed
+                        # we choose the parent with best fitness as offspring if no crossover is parents are selected again and xo is performed
                         offspring1 = parent1 if parent1.fitness <= parent2.fitness else parent2
 
                     # check probabilite against the random value
