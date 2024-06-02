@@ -95,10 +95,12 @@ class Population:
         return np.array(image)
     
     def evolve(self, runs, gens, xo_prob, mut_prob, select, xo, mutate, elitism, inner_elitism):
-            
+        # First step is to do a dictionary that will store all fitness values for each run and generation,
+        # we will safe this after transformations to keep track of changes different runs
         all_fitness_values = {'run': [], 'generation': [], 'fitness': [], 'mutation_method': [], 'xo_method': [], 'selection_method': []}
-
+        # we loop through each run 
         for run in range(runs):
+            # since we do runs we need to create individuals for every population of that run
             self.individuals = [Individual(self.l, self.w) for _ in range(self.size)]
             for individual in self.individuals:
                 individual.get_fitness(self.target_image)
