@@ -12,7 +12,7 @@ def random_mutate(self, ind):
     img = ind.image
 
     for i in range(iterations):
-        num_points = random.randint(3, 6)  # Number of points in the polygon
+        num_points = random.randint(3, 6)  # Number of vertices of the polygon
         region_x = random.randint(0, self.l)
         region_y = random.randint(0, self.w)
 
