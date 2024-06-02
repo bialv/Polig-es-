@@ -3,10 +3,8 @@ import numpy as np
 import random
 
 def fps(population):
-
-    #print("Entrei na selection")
+    # Tournament Selection
     if population.optim == "min":
-        #print("Entrei na selection max")
         tournament_size=6
         # randomly sample participants
         indices = np.random.choice(len(population), tournament_size)
@@ -23,7 +21,6 @@ def fps(population):
 
         return winner
     
-    # tirar esta merda
     elif population.optim == "max":
         raise NotImplementedError
     else:
