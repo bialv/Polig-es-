@@ -14,6 +14,7 @@ from skimage.metrics import structural_similarity as ssim
 
 # Delta E Fitness
 def get_fitness(self, target):
+        # Calculates the fitness of an individual based on the mean Delta E color difference
         self.fitness = np.mean(colour.difference.delta_e.delta_E_CIE1976(target, self.array))
 
 # Sum of Absolute Differences Fitness 
@@ -22,6 +23,7 @@ def get_fitness_2(self, target_image):
         target_image_array = np.array(target_image)
         if self.array.shape != target_image_array.shape:
             raise ValueError("Target and individual don't have the same dim")
+        # Calculates the absolute difference
         abs_diff = np.abs(self.array - target_image_array)
         self.fitness = np.sum(abs_diff)
 
@@ -31,7 +33,7 @@ def get_fitness_3(self, target_image):
         
         if self.array.shape != target_image_array.shape:
             raise ValueError("Target and individual don't have the same dim")
-        
+        # Calculates the squared Euclidean distance
         diff = self.array.astype(np.float32) - target_image_array.astype(np.float32)
         squared_diff = np.square(diff)
         sum_squared_diff = np.sum(squared_diff, axis=-1)
@@ -51,6 +53,7 @@ def get_fitness_4(self, target_image):
         
         if self.array.shape != target_image_array.shape:
             raise ValueError("Target and individual don't have the same dim")
+        # Calcuates the MSE and then takes the square root to get the RMSE
         mse = np.mean((self.array - target_image_array) ** 2)
         self.fitness = np.sqrt(mse)
 
